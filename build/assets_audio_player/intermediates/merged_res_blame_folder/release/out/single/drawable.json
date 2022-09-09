@@ -1,0 +1,22 @@
+[
+    {
+        "merged": "/Users/macbook/Downloads/Deepak_Jangra/night_light/build/assets_audio_player/intermediates/res/merged/release/drawable/notification_icon_background.xml",
+        "source": "/Users/macbook/.gradle/caches/transforms-2/files-2.1/122df2e57d294d1a53db26bbc3b813c1/core-1.6.0/res/drawable/notification_icon_background.xml"
+    },
+    {
+        "merged": "/Users/macbook/Downloads/Deepak_Jangra/night_light/build/assets_audio_player/intermediates/res/merged/release/drawable/exo_rounded_rectangle.xml",
+        "source": "/Users/macbook/.gradle/caches/transforms-2/files-2.1/403f9587316c3c98fafd6a921c1b7d02/jetified-exoplayer-ui-2.13.2/res/drawable/exo_rounded_rectangle.xml"
+    },
+    {
+        "merged": "/Users/macbook/Downloads/Deepak_Jangra/night_light/build/assets_audio_player/intermediates/res/merged/release/drawable/notification_bg_low.xml",
+        "source": "/Users/macbook/.gradle/caches/transforms-2/files-2.1/122df2e57d294d1a53db26bbc3b813c1/core-1.6.0/res/drawable/notification_bg_low.xml"
+    },
+    {
+        "merged": "/Users/macbook/Downloads/Deepak_Jangra/night_light/build/assets_audio_player/intermediates/res/merged/release/drawable/notification_tile_bg.xml",
+        "source": "/Users/macbook/.gradle/caches/transforms-2/files-2.1/122df2e57d294d1a53db26bbc3b813c1/core-1.6.0/res/drawable/notification_tile_bg.xml"
+    },
+    {
+        "merged": "/Users/macbook/Downloads/Deepak_Jangra/night_light/build/assets_audio_player/intermediates/res/merged/release/drawable/notification_bg.xml",
+        "source": "/Users/macbook/.gradle/caches/transforms-2/files-2.1/122df2e57d294d1a53db26bbc3b813c1/core-1.6.0/res/drawable/notification_bg.xml"
+    }
+]
