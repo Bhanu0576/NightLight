@@ -1,4 +1,5 @@
 abstract class AssetsBase {
+  
   static const String appLogo = 'assets/images/portal_logo_light.png';
   static const String yellowbulb = 'assets/images/yellowlight.png';
   static const String aboutIcon = "assets/images/about_icon.png";
@@ -19,7 +20,7 @@ abstract class AssetsBase {
   static const String color_picker = 'assets/images/color_picker_icon.png';
   static const String music_select = 'assets/images/music_icon.png';
   static const String gradientlight = 'assets/images/gradientlight.png';
-
-
+  static const String splashlight = 'assets/images/splashlight.png';
+  static const String removead = 'assets/images/removead.png';
 
 }

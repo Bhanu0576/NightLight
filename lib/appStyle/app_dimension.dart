@@ -34,13 +34,15 @@ abstract class AppDimensions {
   static double twentyEight = 28;
   static double thirty = 30;
   static double thirtyFive = 35;
+    static double thirtySeven = 37;
+
   static double forty = 40;
   static double fortySeven = 47;
   static double fortyFive = 45;
   static double fifty = 50;
   static double fiftyFive = 55;
 
-
+  static double seventy = 70;
   static double eighty = 80;
   static double hundred = 100;
   static double hundredtwenty = 120;

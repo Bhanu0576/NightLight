@@ -1,12 +1,10 @@
 import 'package:demo1212/appStyle/app_color.dart';
 import 'package:demo1212/appStyle/app_dimension.dart';
 import 'package:demo1212/appStyle/assets_images.dart';
+import 'package:demo1212/utils/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// import 'package:night_light/appStyle/app_color.dart';
-// import 'package:night_light/appStyle/app_dimension.dart';
-// import 'package:night_light/appStyle/assets_images.dart';
-// import 'package:night_light/pages/splash/splash_page_controller.dart';
+
 
 import 'splash_page_controller.dart';
 
@@ -22,12 +20,16 @@ class SplashPage extends GetView<SplashPageController> {
         body:Center(child: Container(
             padding: EdgeInsets.only(left: AppDimensions.forty, top: AppDimensions.twenty, right: AppDimensions.forty, bottom: AppDimensions.twenty) ,decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(AppDimensions.twohundred),
-            boxShadow: [BoxShadow(
-              color: AppColors.colorWhite,
-              blurRadius: AppDimensions.tenpointzero,
-            ),]
+            
         ) ,
-            child: Image.asset(AssetsBase.bulbyellowIcon))),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(AssetsBase.splashlight, height: AppDimensions.hundredtwenty, width: AppDimensions.hundredtwenty,),
+                Text(AppStrings.nightLamp, style: TextStyle(color: AppColors.colorWhite, fontSize: AppDimensions.thirtySeven),),
+              ],
+            ),
+        )),
       );
     });
   }

@@ -1,9 +1,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.demo1212">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.worksdelight.nightlight">
+    <uses-permission android:name="android.permission.INTERNET" /> 
+    <uses-permission android:name="com.android.vending.BILLING" />
    <application
-        android:label="demo1212"
-        android:name="${applicationName}"
+        android:label="Night Lamp"
+       android:exported="true"
+       android:name="${applicationName}"
+       tools:replace="android:exported"
         android:icon="@mipmap/ic_launcher">
+         <meta-data
+           android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-5357969312383027~4057590152" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -30,5 +38,7 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-    </application>
+
+       
+       </application>
 </manifest>

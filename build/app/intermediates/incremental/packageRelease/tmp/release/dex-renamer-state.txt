@@ -1,4 +1,0 @@
-#Wed Sep 07 18:26:08 IST 2022
-base.0=/Users/macbook/Downloads/Deepak_Jangra/night_light/build/app/intermediates/dex/release/minifyReleaseWithR8/classes.dex
-renamed.0=classes.dex
-path.0=classes.dex

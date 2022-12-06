@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "559486291306",
+    "project_id": "nightlight-936c4",
+    "storage_bucket": "nightlight-936c4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:559486291306:android:21ccd732c8c2842e3ca913",
+        "android_client_info": {
+          "package_name": "com.worksdelight.nightlight"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "559486291306-4rudf4286e4i1u207f14a7uvt5f6ffbl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYffbGBm86ps9fw8PHk72AXQNwr3UQrE8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "559486291306-4rudf4286e4i1u207f14a7uvt5f6ffbl.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "559486291306-39jf0601ebo9vrisipp24djmv2so4m4s.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.worksdelight.nightlight"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

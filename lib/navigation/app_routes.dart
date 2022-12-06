@@ -9,7 +9,12 @@ abstract class Routes {
   static const homePage = _Paths.homePage;
   static const setting = _Paths.setting;
   static const colorPickPage = _Paths.colorPickPage;
+  static const settingScreen = _Paths.settingScreen;
+  static const showCaseMain = _Paths.showCaseMain;
+  static const htmlScreenMain = _Paths.htmlScreenMain;
+  static const contactUsPage = _Paths.contactUsPage;
 
+  //static const customShowCaseWidget = _Paths.customShowCaseWidget;
 }
 
 abstract class _Paths {
@@ -18,5 +23,10 @@ abstract class _Paths {
   static const homePage = '/homePage';
   static const setting = '/setting';
   static const colorPickPage = '/colorPickPage';
+  static const settingScreen = '/settingScreen';
+  static const showCaseMain = '/showCaseMain';
+  static const htmlScreenMain = '/htmlScreenView';
+  static const contactUsPage = '/contactUsPage';
 
+  //static const customShowCaseWidget = '/customShowCaseWidget';
 }
