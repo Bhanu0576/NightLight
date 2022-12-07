@@ -44,7 +44,7 @@ class HomePage extends StatefulWidget {
 
 final bool _kAutoConsume = Platform.isIOS || true;
 
-const String _kConsumableId = 'android.test.purchased';
+const String _kConsumableId = 'com.app.product';
 const List<String> _kProductIds = <String>[
   _kConsumableId,
 ];
@@ -205,31 +205,47 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _listenToPurchaseUpdated(
       List<PurchaseDetails> purchaseDetailsList) async {
+    print("purchaseDetailsList $purchaseDetailsList");
     for (final PurchaseDetails purchaseDetails in purchaseDetailsList) {
+      print("purchaseDetails $purchaseDetails");
       if (purchaseDetails.status == PurchaseStatus.pending) {
-      } else {
-        if (purchaseDetails.status == PurchaseStatus.error) {
-        } else if (purchaseDetails.status == PurchaseStatus.purchased ||
-            purchaseDetails.status == PurchaseStatus.restored) {
-          final bool valid = await _verifyPurchase(purchaseDetails);
-          if (valid) {
-            deliverProduct(purchaseDetails);
-          } else {
-            _handleInvalidPurchase(purchaseDetails);
-            return;
-          }
+        print("PurchaseStatus.pending ${PurchaseStatus.pending}");
+      } else if (purchaseDetails.status == PurchaseStatus.error) {
+        print("PurchaseStatus.error ${PurchaseStatus.error}");
+      } else if (purchaseDetails.status == PurchaseStatus.purchased ||
+          purchaseDetails.status == PurchaseStatus.restored) {
+        print("PurchaseStatus.status ${purchaseDetails.status}");
+
+        //--------------------------------
+        // if (purchaseDetails.status == PurchaseStatus.purchased) {
+        //   final prefs = await SharedPreferences.getInstance();
+        //   prefs.setBool("inPurchased", true);
+        // }
+        if(purchaseDetails.status == PurchaseStatus.purchased)
+        {
+          final prefs = await SharedPreferences.getInstance();
+          prefs.setBool("inAppPurchased", true);
         }
-        if (Platform.isAndroid) {
-          if (!_kAutoConsume && purchaseDetails.productID == _kConsumableId) {
-            final InAppPurchaseAndroidPlatformAddition androidAddition =
-                _inAppPurchase.getPlatformAddition<
-                    InAppPurchaseAndroidPlatformAddition>();
-            await androidAddition.consumePurchase(purchaseDetails);
-          }
+
+        //----------------------------------
+        final bool valid = await _verifyPurchase(purchaseDetails);
+        if (valid) {
+          deliverProduct(purchaseDetails);
+        } else {
+          _handleInvalidPurchase(purchaseDetails);
+          return;
         }
-        if (purchaseDetails.pendingCompletePurchase) {
-          await _inAppPurchase.completePurchase(purchaseDetails);
+      }
+      if (Platform.isAndroid) {
+        if (!_kAutoConsume && purchaseDetails.productID == _kConsumableId) {
+          final InAppPurchaseAndroidPlatformAddition androidAddition =
+              _inAppPurchase
+                  .getPlatformAddition<InAppPurchaseAndroidPlatformAddition>();
+          await androidAddition.consumePurchase(purchaseDetails);
         }
+      }
+      if (purchaseDetails.pendingCompletePurchase) {
+        await _inAppPurchase.completePurchase(purchaseDetails);
       }
     }
   }
@@ -268,7 +284,8 @@ class _HomePageState extends State<HomePage> {
                                       borderRadius: BorderRadius.circular(100),
                                       color: AppColors.colorBlack),
                                   child: const Image(
-                                      image: AssetImage(AssetsBase.splashlight)),
+                                      image:
+                                          AssetImage(AssetsBase.splashlight)),
                                 ),
                                 SizedBox(
                                   width: AppDimensions.twenty,
@@ -420,19 +437,22 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           AppBar(
                             //title:Image(image: AssetImage(AssetsBase.splashlight)),
+                            title: const Text("Night Lamp"),
+                            centerTitle: true,
                             backgroundColor: AppColors.colorBlueDark,
                             actions: [
                               //Image(image: AssetImage(AssetsBase.splashlight,), height: 10,),
                               Container(
                                 padding: EdgeInsets.all(7),
-                                  height: AppDimensions.fiftyFive,
-                                  width: AppDimensions.fiftyFive,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(100),
-                                      color: AppColors.colorBlueDark),
-                                  child: const Image(
-                                      image: AssetImage(AssetsBase.splashlight), ),
+                                height: AppDimensions.fiftyFive,
+                                width: AppDimensions.fiftyFive,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(100),
+                                    color: AppColors.colorBlueDark),
+                                child: const Image(
+                                  image: AssetImage(AssetsBase.splashlight),
                                 ),
+                              ),
                             ],
                           ),
                           // controller.bannerAd != null ?
@@ -445,12 +465,12 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           // : Container(),
-            
+
                           SizedBox(
                             height: MediaQuery.of(context).size.height / 60,
                           ),
                           // const Spacer(),
-            
+
                           Container(
                             height: controller.selectColor == 0
                                 ? MediaQuery.of(context).size.height / 2.3
@@ -465,8 +485,8 @@ class _HomePageState extends State<HomePage> {
                                 bottom: AppDimensions.ten),
                             decoration: BoxDecoration(
                                 color: Colors.white70,
-                                borderRadius:
-                                    BorderRadius.circular(AppDimensions.thirty)),
+                                borderRadius: BorderRadius.circular(
+                                    AppDimensions.thirty)),
                             child: Column(
                               children: [
                                 SizedBox(
@@ -520,13 +540,15 @@ class _HomePageState extends State<HomePage> {
                                                       color: Colors.white70,
                                                       borderRadius:
                                                           BorderRadius.circular(
-                                                              AppDimensions.ten),
+                                                              AppDimensions
+                                                                  .ten),
                                                       border: Border.all(
                                                           color: controller
                                                                       .selectColor ==
                                                                   0
                                                               ? Colors.black
-                                                              : Colors.white70)),
+                                                              : Colors
+                                                                  .white70)),
                                                   child: Image.asset(
                                                     AssetsBase.white_light,
                                                     height: AppDimensions.fifty,
@@ -572,7 +594,8 @@ class _HomePageState extends State<HomePage> {
                                                   final pref =
                                                       await SharedPreferences
                                                           .getInstance();
-                                                  pref.setString("tapClick", "1");
+                                                  pref.setString(
+                                                      "tapClick", "1");
                                                 },
                                                 child: CustomShowcaseWidget(
                                                   globalKey: keyTwo,
@@ -584,9 +607,10 @@ class _HomePageState extends State<HomePage> {
                                                     decoration: BoxDecoration(
                                                         color: Colors.white70,
                                                         borderRadius:
-                                                            BorderRadius.circular(
-                                                                AppDimensions
-                                                                    .ten),
+                                                            BorderRadius
+                                                                .circular(
+                                                                    AppDimensions
+                                                                        .ten),
                                                         border: Border.all(
                                                             color: controller
                                                                         .selectColor ==
@@ -595,9 +619,12 @@ class _HomePageState extends State<HomePage> {
                                                                 : Colors
                                                                     .white70)),
                                                     child: Image.asset(
-                                                      AssetsBase.multicolor_light,
-                                                      height: AppDimensions.fifty,
-                                                      width: AppDimensions.fifty,
+                                                      AssetsBase
+                                                          .multicolor_light,
+                                                      height:
+                                                          AppDimensions.fifty,
+                                                      width:
+                                                          AppDimensions.fifty,
                                                     ),
                                                   ),
                                                 ),
@@ -639,7 +666,8 @@ class _HomePageState extends State<HomePage> {
                                                   final pref =
                                                       await SharedPreferences
                                                           .getInstance();
-                                                  pref.setString("tapClick", "1");
+                                                  pref.setString(
+                                                      "tapClick", "1");
                                                   controller.onInit();
                                                 },
                                                 child: CustomShowcaseWidget(
@@ -652,9 +680,10 @@ class _HomePageState extends State<HomePage> {
                                                     decoration: BoxDecoration(
                                                         color: Colors.white70,
                                                         borderRadius:
-                                                            BorderRadius.circular(
-                                                                AppDimensions
-                                                                    .ten),
+                                                            BorderRadius
+                                                                .circular(
+                                                                    AppDimensions
+                                                                        .ten),
                                                         border: Border.all(
                                                             color: controller
                                                                         .selectColor ==
@@ -664,8 +693,10 @@ class _HomePageState extends State<HomePage> {
                                                                     .white70)),
                                                     child: Image.asset(
                                                       AssetsBase.gradientlight,
-                                                      height: AppDimensions.fifty,
-                                                      width: AppDimensions.fifty,
+                                                      height:
+                                                          AppDimensions.fifty,
+                                                      width:
+                                                          AppDimensions.fifty,
                                                     ),
                                                   ),
                                                 ),
@@ -689,8 +720,9 @@ class _HomePageState extends State<HomePage> {
                                               ElevatedButton(
                                                 onPressed: () {
                                                   controller.decrement();
-            
-                                                  if (controller.val == "true") {
+
+                                                  if (controller.val ==
+                                                      "true") {
                                                     controller.playButtonB();
                                                     controller.update();
                                                   }
@@ -721,13 +753,15 @@ class _HomePageState extends State<HomePage> {
                                                   decoration: BoxDecoration(
                                                     borderRadius:
                                                         BorderRadius.circular(
-                                                            AppDimensions.twenty),
+                                                            AppDimensions
+                                                                .twenty),
                                                     color:
                                                         AppColors.colorBlueDark,
                                                   ),
                                                   child: Row(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment.center,
+                                                        MainAxisAlignment
+                                                            .center,
                                                     children: [
                                                       Text(
                                                         "${controller.mint} Mins",
@@ -749,8 +783,9 @@ class _HomePageState extends State<HomePage> {
                                                   controller.increment();
                                                   // controller.playButtonB();
                                                   // controller.update();
-            
-                                                  if (controller.val == "true") {
+
+                                                  if (controller.val ==
+                                                      "true") {
                                                     controller.playButtonB();
                                                     controller.update();
                                                   }
@@ -798,8 +833,8 @@ class _HomePageState extends State<HomePage> {
                                                                       .ten,
                                                             ),
                                                             const DotteLine(
-                                                              linecolor:
-                                                                  Color.fromRGBO(
+                                                              linecolor: Color
+                                                                  .fromRGBO(
                                                                       61,
                                                                       61,
                                                                       61,
@@ -821,18 +856,17 @@ class _HomePageState extends State<HomePage> {
                                                                               .length;
                                                                       index++)
                                                                     InkWell(
-                                                                      onTap: () {
+                                                                      onTap:
+                                                                          () {
                                                                         setState(
                                                                             () {
                                                                           colorSelectValSingle =
                                                                               false;
                                                                         });
                                                                         controller
-                                                                            .changeColorState(
-                                                                                index);
+                                                                            .changeColorState(index);
                                                                         controller.singlecolor = controller
-                                                                            .singleColorModel[
-                                                                                index]
+                                                                            .singleColorModel[index]
                                                                             .colorName!;
                                                                         for (int i =
                                                                                 0;
@@ -840,37 +874,31 @@ class _HomePageState extends State<HomePage> {
                                                                             i++) {
                                                                           if (controller.singlecolor ==
                                                                               controller.singleColorModel[i].colorName!) {
-                                                                            controller
-                                                                                .singleColorModel[i]
-                                                                                .isSelect
-                                                                                .value = true;
+                                                                            controller.singleColorModel[i].isSelect.value =
+                                                                                true;
                                                                           } else {
-                                                                            controller
-                                                                                .singleColorModel[i]
-                                                                                .isSelect
-                                                                                .value = false;
+                                                                            controller.singleColorModel[i].isSelect.value =
+                                                                                false;
                                                                           }
                                                                         }
                                                                         controller.spColorandAudio(
                                                                             'singleColor',
                                                                             index);
-            
+
                                                                         //controller.saveColorandAudioSP('singleColor', index);
                                                                       },
                                                                       child:
                                                                           Padding(
                                                                         padding:
-                                                                            AppDimensions
-                                                                                .margin0_5_5_5,
+                                                                            AppDimensions.margin0_5_5_5,
                                                                         child:
                                                                             Container(
                                                                           height:
                                                                               AppDimensions.thirtyFive,
-                                                                          width: AppDimensions
-                                                                              .thirtyFive,
+                                                                          width:
+                                                                              AppDimensions.thirtyFive,
                                                                           decoration: BoxDecoration(
-                                                                              shape:
-                                                                                  BoxShape.circle,
+                                                                              shape: BoxShape.circle,
                                                                               color: controller.singleColorModel[index].colorName),
                                                                           child: controller.singleColorModel[index].isSelect.value
                                                                               ? const Icon(
@@ -885,8 +913,8 @@ class _HomePageState extends State<HomePage> {
                                                               ),
                                                             ),
                                                             const DotteLine(
-                                                              linecolor:
-                                                                  Color.fromRGBO(
+                                                              linecolor: Color
+                                                                  .fromRGBO(
                                                                       61,
                                                                       61,
                                                                       61,
@@ -919,15 +947,15 @@ class _HomePageState extends State<HomePage> {
                                                                           BorderRadius.circular(
                                                                               20),
                                                                       border: Border.all(
-                                                                          color: Colors
-                                                                              .black),
+                                                                          color:
+                                                                              Colors.black),
                                                                     ),
                                                                     child: Text(
                                                                       AppStrings
                                                                           .random,
                                                                       style: const TextStyle(
-                                                                          color: Colors
-                                                                              .black),
+                                                                          color:
+                                                                              Colors.black),
                                                                     ),
                                                                   ),
                                                                 ),
@@ -936,7 +964,7 @@ class _HomePageState extends State<HomePage> {
                                                             ElevatedButton(
                                                               onPressed: () {
                                                                 Get.back();
-            
+
                                                                 if (controller
                                                                         .val ==
                                                                     "true") {
@@ -963,70 +991,31 @@ class _HomePageState extends State<HomePage> {
                                                           ],
                                                         ));
                                                   },
-                                                  child:
-                                                      controller.showCase == "1"
-                                                          ? Column(
-                                                              children: [
-                                                                Container(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .only(
-                                                                          top: 3,
-                                                                          left:
-                                                                              13,
-                                                                          right:
-                                                                              13,
-                                                                          bottom:
-                                                                              3),
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    border: Border.all(
-                                                                        color: colorSelectValSingle
-                                                                            ? Colors
-                                                                                .red
-                                                                            : Colors
-                                                                                .transparent,
-                                                                        width: 5),
-                                                                  ),
-                                                                  child:
-                                                                      Image.asset(
-                                                                    AssetsBase
-                                                                        .color_picker,
-                                                                    height:
-                                                                        AppDimensions
-                                                                            .thirty,
-                                                                    width:
-                                                                        AppDimensions
-                                                                            .thirty,
-                                                                  ),
-                                                                ),
-                                                                Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  children: [
-                                                                    if (controller
-                                                                            .singlecolor !=
-                                                                        null)
-                                                                      Container(
-                                                                        height:
-                                                                            12,
-                                                                        width: 12,
-                                                                        decoration: BoxDecoration(
-                                                                            color: controller
-                                                                                .singlecolor,
-                                                                            borderRadius:
-                                                                                const BorderRadius.all(Radius.circular(50))),
-                                                                      ),
-                                                                  ],
-                                                                ),
-                                                              ],
-                                                            )
-                                                          : CustomShowcaseWidget(
-                                                              globalKey: keyFour,
-                                                              description: AppStrings
-                                                                  .colorSelection,
-                                                              child: Image.asset(
+                                                  child: controller.showCase ==
+                                                          "1"
+                                                      ? Column(
+                                                          children: [
+                                                            Container(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      top: 3,
+                                                                      left: 13,
+                                                                      right: 13,
+                                                                      bottom:
+                                                                          3),
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                border: Border.all(
+                                                                    color: colorSelectValSingle
+                                                                        ? Colors
+                                                                            .red
+                                                                        : Colors
+                                                                            .transparent,
+                                                                    width: 5),
+                                                              ),
+                                                              child:
+                                                                  Image.asset(
                                                                 AssetsBase
                                                                     .color_picker,
                                                                 height:
@@ -1037,6 +1026,41 @@ class _HomePageState extends State<HomePage> {
                                                                         .thirty,
                                                               ),
                                                             ),
+                                                            Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                if (controller
+                                                                        .singlecolor !=
+                                                                    null)
+                                                                  Container(
+                                                                    height: 12,
+                                                                    width: 12,
+                                                                    decoration: BoxDecoration(
+                                                                        color: controller
+                                                                            .singlecolor,
+                                                                        borderRadius:
+                                                                            const BorderRadius.all(Radius.circular(50))),
+                                                                  ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        )
+                                                      : CustomShowcaseWidget(
+                                                          globalKey: keyFour,
+                                                          description: AppStrings
+                                                              .colorSelection,
+                                                          child: Image.asset(
+                                                            AssetsBase
+                                                                .color_picker,
+                                                            height:
+                                                                AppDimensions
+                                                                    .thirty,
+                                                            width: AppDimensions
+                                                                .thirty,
+                                                          ),
+                                                        ),
                                                   //Text("Audio Selected", style: TextStyle(color: Colors.black),),
                                                 ),
                                               ),
@@ -1057,8 +1081,8 @@ class _HomePageState extends State<HomePage> {
                                                                       .ten,
                                                             ),
                                                             const DotteLine(
-                                                              linecolor:
-                                                                  Color.fromRGBO(
+                                                              linecolor: Color
+                                                                  .fromRGBO(
                                                                       61,
                                                                       61,
                                                                       61,
@@ -1077,10 +1101,12 @@ class _HomePageState extends State<HomePage> {
                                                                       .width,
                                                               child: ListView
                                                                   .builder(
-                                                                itemCount: controller
-                                                                    .multiAudioModel
-                                                                    .length,
-                                                                shrinkWrap: true,
+                                                                itemCount:
+                                                                    controller
+                                                                        .multiAudioModel
+                                                                        .length,
+                                                                shrinkWrap:
+                                                                    true,
                                                                 itemBuilder:
                                                                     (context,
                                                                         index) {
@@ -1090,28 +1116,20 @@ class _HomePageState extends State<HomePage> {
                                                                               .padding10_10_5_5,
                                                                       child: InkWell(
                                                                           onTap: () {
-                                                                            setState(
-                                                                                () {
-                                                                              audioSelectValSingle =
-                                                                                  false;
+                                                                            setState(() {
+                                                                              audioSelectValSingle = false;
                                                                             });
-                                                                            controller
-                                                                                .selectAudioFirst(index);
-            
-                                                                            controller.spColorandAudio(
-                                                                                'singleAudio',
+                                                                            controller.selectAudioFirst(index);
+
+                                                                            controller.spColorandAudio('singleAudio',
                                                                                 index);
                                                                           },
                                                                           child: Obx(
                                                                             () =>
                                                                                 Container(
-                                                                              height:
-                                                                                  AppDimensions.fifty,
-                                                                              width:
-                                                                                  double.infinity,
-                                                                              color: controller.firstmultiAudioModel[index].isSelect.value == true
-                                                                                  ? AppColors.colorBlueDark
-                                                                                  : Colors.transparent,
+                                                                              height: AppDimensions.fifty,
+                                                                              width: double.infinity,
+                                                                              color: controller.firstmultiAudioModel[index].isSelect.value == true ? AppColors.colorBlueDark : Colors.transparent,
                                                                               // ignore: unrelated_type_equality_checks
                                                                               child: Center(
                                                                                   child: Text(
@@ -1128,7 +1146,7 @@ class _HomePageState extends State<HomePage> {
                                                             ElevatedButton(
                                                               onPressed: () {
                                                                 Get.back();
-            
+
                                                                 if (controller
                                                                         .val ==
                                                                     "true") {
@@ -1155,105 +1173,106 @@ class _HomePageState extends State<HomePage> {
                                                           ],
                                                         ));
                                                   },
-                                                  child: controller.showCase ==
-                                                          "1"
-                                                      ? Column(
-                                                          children: [
-                                                            Container(
-                                                              padding:
-                                                                  const EdgeInsets
+                                                  child:
+                                                      controller.showCase == "1"
+                                                          ? Column(
+                                                              children: [
+                                                                Container(
+                                                                  padding: const EdgeInsets
                                                                           .only(
                                                                       top: 3,
                                                                       left: 13,
                                                                       right: 13,
-                                                                      bottom: 3),
-                                                              decoration: BoxDecoration(
-                                                                  border: Border.all(
-                                                                      color: audioSelectValSingle
-                                                                          ? Colors
-                                                                              .red
-                                                                          : Colors
-                                                                              .transparent,
-                                                                      width: 5)),
-                                                              child: Image.asset(
-                                                                AssetsBase
-                                                                    .music_select,
-                                                                height:
-                                                                    AppDimensions
+                                                                      bottom:
+                                                                          3),
+                                                                  decoration: BoxDecoration(
+                                                                      border: Border.all(
+                                                                          color: audioSelectValSingle
+                                                                              ? Colors.red
+                                                                              : Colors.transparent,
+                                                                          width: 5)),
+                                                                  child: Image
+                                                                      .asset(
+                                                                    AssetsBase
+                                                                        .music_select,
+                                                                    height: AppDimensions
                                                                         .thirty,
-                                                                width:
-                                                                    AppDimensions
+                                                                    width: AppDimensions
                                                                         .thirty,
-                                                              ),
-                                                            ),
-                                                            // audioSelectVal
-                                                            //     ? Text("")
-                                                            //     : Text(
-                                                            //         "Selected Audio",
-                                                            //         style: TextStyle(
-                                                            //             color: Colors
-                                                            //                 .black),
-                                                            //       ),
-                                                            Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
-                                                              children: [
-                                                                for (int i = 0;
-                                                                    i <
-                                                                        controller
-                                                                            .firstmultiAudioModel
-                                                                            .length;
-                                                                    i++)
-                                                                  if (controller
-                                                                      .firstmultiAudioModel[
-                                                                          i]
-                                                                      .isSelect
-                                                                      .value)
-                                                                    Container(
-                                                                      alignment:
-                                                                          Alignment
-                                                                              .center,
-                                                                      color: Colors
-                                                                          .transparent,
-                                                                      child: Text(controller
+                                                                  ),
+                                                                ),
+                                                                // audioSelectVal
+                                                                //     ? Text("")
+                                                                //     : Text(
+                                                                //         "Selected Audio",
+                                                                //         style: TextStyle(
+                                                                //             color: Colors
+                                                                //                 .black),
+                                                                //       ),
+                                                                Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  children: [
+                                                                    for (int i =
+                                                                            0;
+                                                                        i <
+                                                                            controller
+                                                                                .firstmultiAudioModel.length;
+                                                                        i++)
+                                                                      if (controller
                                                                           .firstmultiAudioModel[
                                                                               i]
-                                                                          .name),
-                                                                    ),
+                                                                          .isSelect
+                                                                          .value)
+                                                                        Container(
+                                                                          alignment:
+                                                                              Alignment.center,
+                                                                          color:
+                                                                              Colors.transparent,
+                                                                          child: Text(controller
+                                                                              .firstmultiAudioModel[i]
+                                                                              .name),
+                                                                        ),
+                                                                  ],
+                                                                )
                                                               ],
                                                             )
-                                                          ],
-                                                        )
-                                                      : InkWell(
-                                                          onTap: () async {
-                                                            // print("showcase 5");
-                                                            final pref =
-                                                                await SharedPreferences
-                                                                    .getInstance();
-                                                            controller.showCase =
-                                                                pref.getString(
-                                                                        "tapClick") ??
-                                                                    "";
-                                                            controller.update();
-                                                          },
-                                                          child:
-                                                              CustomShowcaseWidget(
-                                                            globalKey: keyFive,
-                                                            description: AppStrings
-                                                                .audioSelection,
-                                                            child: Image.asset(
-                                                              AssetsBase
-                                                                  .music_select,
-                                                              height:
-                                                                  AppDimensions
-                                                                      .thirty,
-                                                              width: AppDimensions
-                                                                  .thirty,
+                                                          : InkWell(
+                                                              onTap: () async {
+                                                                // print("showcase 5");
+                                                                final pref =
+                                                                    await SharedPreferences
+                                                                        .getInstance();
+                                                                controller
+                                                                        .showCase =
+                                                                    pref.getString(
+                                                                            "tapClick") ??
+                                                                        "";
+                                                                controller
+                                                                    .update();
+                                                              },
+                                                              child:
+                                                                  CustomShowcaseWidget(
+                                                                globalKey:
+                                                                    keyFive,
+                                                                description:
+                                                                    AppStrings
+                                                                        .audioSelection,
+                                                                child:
+                                                                    Image.asset(
+                                                                  AssetsBase
+                                                                      .music_select,
+                                                                  height:
+                                                                      AppDimensions
+                                                                          .thirty,
+                                                                  width:
+                                                                      AppDimensions
+                                                                          .thirty,
+                                                                ),
+                                                              ),
                                                             ),
-                                                          ),
-                                                        ),
-            
+
                                                   // InkWell(
                                                   //     onTap: () {
                                                   //       controller.update();
@@ -1268,13 +1287,15 @@ class _HomePageState extends State<HomePage> {
                                     : controller.selectColor == 1
                                         ? Column(
                                             children: [
-                                              SizedBox(height: AppDimensions.ten),
+                                              SizedBox(
+                                                  height: AppDimensions.ten),
                                               const Padding(
                                                 padding:
                                                     EdgeInsets.only(bottom: 5),
                                                 child: Text(
                                                   "Night Light Frequency",
-                                                  style: TextStyle(fontSize: 17),
+                                                  style:
+                                                      TextStyle(fontSize: 17),
                                                 ),
                                               ),
                                               Row(
@@ -1282,10 +1303,11 @@ class _HomePageState extends State<HomePage> {
                                                   ElevatedButton(
                                                     onPressed: () {
                                                       controller.decrementSec();
-            
+
                                                       if (controller.val ==
                                                           "true") {
-                                                        controller.playButtonB();
+                                                        controller
+                                                            .playButtonB();
                                                         controller.update();
                                                       }
                                                     },
@@ -1297,10 +1319,11 @@ class _HomePageState extends State<HomePage> {
                                                         color: Colors.white,
                                                       ),
                                                     ),
-                                                    style:
-                                                        ElevatedButton.styleFrom(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
                                                       shape: CircleBorder(),
-                                                      padding: EdgeInsets.all(8),
+                                                      padding:
+                                                          EdgeInsets.all(8),
                                                       backgroundColor: AppColors
                                                           .colorBlueDark, // <-- Button color
                                                       foregroundColor: Colors
@@ -1312,7 +1335,8 @@ class _HomePageState extends State<HomePage> {
                                                   // ),
                                                   Expanded(
                                                     child: Container(
-                                                      height: AppDimensions.forty,
+                                                      height:
+                                                          AppDimensions.forty,
                                                       decoration: BoxDecoration(
                                                         borderRadius:
                                                             BorderRadius.circular(
@@ -1328,13 +1352,12 @@ class _HomePageState extends State<HomePage> {
                                                         children: [
                                                           Text(
                                                             "${controller.sec} Sec",
-                                                            style:
-                                                                const TextStyle(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    color: Colors
-                                                                        .white),
+                                                            style: const TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color: Colors
+                                                                    .white),
                                                           ),
                                                         ],
                                                       ),
@@ -1346,10 +1369,11 @@ class _HomePageState extends State<HomePage> {
                                                   ElevatedButton(
                                                     onPressed: () {
                                                       controller.incrementSec();
-            
+
                                                       if (controller.val ==
                                                           "true") {
-                                                        controller.playButtonB();
+                                                        controller
+                                                            .playButtonB();
                                                         controller.update();
                                                       }
                                                     },
@@ -1361,10 +1385,11 @@ class _HomePageState extends State<HomePage> {
                                                         color: Colors.white,
                                                       ),
                                                     ),
-                                                    style:
-                                                        ElevatedButton.styleFrom(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
                                                       shape: CircleBorder(),
-                                                      padding: EdgeInsets.all(8),
+                                                      padding:
+                                                          EdgeInsets.all(8),
                                                       backgroundColor: AppColors
                                                           .colorBlueDark, // <-- Button color
                                                       foregroundColor: Colors
@@ -1374,10 +1399,12 @@ class _HomePageState extends State<HomePage> {
                                                 ],
                                               ),
                                               SizedBox(
-                                                height: AppDimensions.twentyFive,
+                                                height:
+                                                    AppDimensions.twentyFive,
                                                 child: const Text(
                                                   "Duration",
-                                                  style: TextStyle(fontSize: 18),
+                                                  style:
+                                                      TextStyle(fontSize: 18),
                                                 ),
                                               ),
                                               Row(
@@ -1385,10 +1412,11 @@ class _HomePageState extends State<HomePage> {
                                                   ElevatedButton(
                                                     onPressed: () {
                                                       controller.decrement();
-            
+
                                                       if (controller.val ==
                                                           "true") {
-                                                        controller.playButtonB();
+                                                        controller
+                                                            .playButtonB();
                                                         controller.update();
                                                       }
                                                     },
@@ -1400,10 +1428,11 @@ class _HomePageState extends State<HomePage> {
                                                         color: Colors.white,
                                                       ),
                                                     ),
-                                                    style:
-                                                        ElevatedButton.styleFrom(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
                                                       shape: CircleBorder(),
-                                                      padding: EdgeInsets.all(8),
+                                                      padding:
+                                                          EdgeInsets.all(8),
                                                       backgroundColor: AppColors
                                                           .colorBlueDark, // <-- Button color
                                                       foregroundColor: Colors
@@ -1415,7 +1444,8 @@ class _HomePageState extends State<HomePage> {
                                                   // ),
                                                   Expanded(
                                                     child: Container(
-                                                      height: AppDimensions.forty,
+                                                      height:
+                                                          AppDimensions.forty,
                                                       decoration: BoxDecoration(
                                                         borderRadius:
                                                             BorderRadius.circular(
@@ -1431,13 +1461,12 @@ class _HomePageState extends State<HomePage> {
                                                         children: [
                                                           Text(
                                                             "${controller.mint} Mins",
-                                                            style:
-                                                                const TextStyle(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    color: Colors
-                                                                        .white),
+                                                            style: const TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color: Colors
+                                                                    .white),
                                                           ),
                                                         ],
                                                       ),
@@ -1449,10 +1478,11 @@ class _HomePageState extends State<HomePage> {
                                                   ElevatedButton(
                                                     onPressed: () {
                                                       controller.increment();
-            
+
                                                       if (controller.val ==
                                                           "true") {
-                                                        controller.playButtonB();
+                                                        controller
+                                                            .playButtonB();
                                                         controller.update();
                                                       }
                                                     },
@@ -1464,10 +1494,11 @@ class _HomePageState extends State<HomePage> {
                                                         color: Colors.white,
                                                       ),
                                                     ),
-                                                    style:
-                                                        ElevatedButton.styleFrom(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
                                                       shape: CircleBorder(),
-                                                      padding: EdgeInsets.all(8),
+                                                      padding:
+                                                          EdgeInsets.all(8),
                                                       backgroundColor: AppColors
                                                           .colorBlueDark, // <-- Button color
                                                       foregroundColor: Colors
@@ -1481,7 +1512,8 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                               Row(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.spaceEvenly,
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
                                                 children: [
                                                   Expanded(
                                                     child: GestureDetector(
@@ -1525,8 +1557,7 @@ class _HomePageState extends State<HomePage> {
                                                                               () {
                                                                             colorSelectValMulti =
                                                                                 false;
-                                                                            controller
-                                                                                .multiColorSelect(index);
+                                                                            controller.multiColorSelect(index);
                                                                           },
                                                                           child:
                                                                               Padding(
@@ -1536,12 +1567,9 @@ class _HomePageState extends State<HomePage> {
                                                                                 bottom: 5),
                                                                             child:
                                                                                 Container(
-                                                                              height:
-                                                                                  AppDimensions.thirtyFive,
-                                                                              width:
-                                                                                  AppDimensions.thirtyFive,
-                                                                              decoration:
-                                                                                  BoxDecoration(shape: BoxShape.circle, color: controller.multiColorModel[index].colorName),
+                                                                              height: AppDimensions.thirtyFive,
+                                                                              width: AppDimensions.thirtyFive,
+                                                                              decoration: BoxDecoration(shape: BoxShape.circle, color: controller.multiColorModel[index].colorName),
                                                                               child: controller.multiColorModel[index].isSelect.value
                                                                                   ? const Icon(
                                                                                       Icons.check,
@@ -1566,13 +1594,11 @@ class _HomePageState extends State<HomePage> {
                                                                   height: 10,
                                                                 ),
                                                                 Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .only(
-                                                                          left:
-                                                                              10,
-                                                                          right:
-                                                                              10),
+                                                                  padding: const EdgeInsets
+                                                                          .only(
+                                                                      left: 10,
+                                                                      right:
+                                                                          10),
                                                                   child: Row(
                                                                     mainAxisAlignment:
                                                                         MainAxisAlignment
@@ -1599,8 +1625,7 @@ class _HomePageState extends State<HomePage> {
                                                                           ),
                                                                           child:
                                                                               Text(
-                                                                            AppStrings
-                                                                                .rainbow,
+                                                                            AppStrings.rainbow,
                                                                             style:
                                                                                 const TextStyle(color: Colors.black),
                                                                           ),
@@ -1610,9 +1635,10 @@ class _HomePageState extends State<HomePage> {
                                                                   ),
                                                                 ),
                                                                 ElevatedButton(
-                                                                  onPressed: () {
+                                                                  onPressed:
+                                                                      () {
                                                                     Get.back();
-            
+
                                                                     if (controller
                                                                             .val ==
                                                                         "true") {
@@ -1630,7 +1656,8 @@ class _HomePageState extends State<HomePage> {
                                                                           borderRadius:
                                                                               BorderRadius.circular(AppDimensions.twenty))),
                                                                   child: Text(
-                                                                    AppStrings.ok,
+                                                                    AppStrings
+                                                                        .ok,
                                                                     style: const TextStyle(
                                                                         color: Colors
                                                                             .white),
@@ -1663,8 +1690,9 @@ class _HomePageState extends State<HomePage> {
                                                               height:
                                                                   AppDimensions
                                                                       .thirty,
-                                                              width: AppDimensions
-                                                                  .thirty,
+                                                              width:
+                                                                  AppDimensions
+                                                                      .thirty,
                                                             ),
                                                           ),
                                                           Row(
@@ -1691,10 +1719,8 @@ class _HomePageState extends State<HomePage> {
                                                                             .multiColorModel[
                                                                                 i]
                                                                             .colorName!,
-                                                                        borderRadius: const BorderRadius
-                                                                                .all(
-                                                                            Radius.circular(
-                                                                                50))),
+                                                                        borderRadius:
+                                                                            const BorderRadius.all(Radius.circular(50))),
                                                                   ),
                                                             ],
                                                           ),
@@ -1727,8 +1753,7 @@ class _HomePageState extends State<HomePage> {
                                                                             0.4),
                                                                   ),
                                                                   SizedBox(
-                                                                    height: MediaQuery.of(
-                                                                                context)
+                                                                    height: MediaQuery.of(context)
                                                                             .size
                                                                             .height /
                                                                         4,
@@ -1759,7 +1784,7 @@ class _HomePageState extends State<HomePage> {
                                                                                   () => Container(
                                                                                     height: AppDimensions.fifty,
                                                                                     width: double.infinity,
-            
+
                                                                                     color: controller.secondmultiAudioModel[index].isSelect.value == true ? AppColors.colorBlueDark : Colors.transparent,
                                                                                     // ignore: unrelated_type_equality_checks
                                                                                     child: Center(
@@ -1778,7 +1803,7 @@ class _HomePageState extends State<HomePage> {
                                                                     onPressed:
                                                                         () {
                                                                       Get.back();
-            
+
                                                                       if (controller
                                                                               .val ==
                                                                           "true") {
@@ -1799,8 +1824,8 @@ class _HomePageState extends State<HomePage> {
                                                                       AppStrings
                                                                           .ok,
                                                                       style: const TextStyle(
-                                                                          color: AppColors
-                                                                              .colorWhite),
+                                                                          color:
+                                                                              AppColors.colorWhite),
                                                                     ),
                                                                   )
                                                                 ],
@@ -1815,7 +1840,8 @@ class _HomePageState extends State<HomePage> {
                                                                       top: 3,
                                                                       left: 13,
                                                                       right: 13,
-                                                                      bottom: 3),
+                                                                      bottom:
+                                                                          3),
                                                               decoration: BoxDecoration(
                                                                   border: Border.all(
                                                                       color: audioSelectValMulti
@@ -1823,8 +1849,10 @@ class _HomePageState extends State<HomePage> {
                                                                               .red
                                                                           : Colors
                                                                               .transparent,
-                                                                      width: 5)),
-                                                              child: Image.asset(
+                                                                      width:
+                                                                          5)),
+                                                              child:
+                                                                  Image.asset(
                                                                 AssetsBase
                                                                     .music_select,
                                                                 height:
@@ -1873,13 +1901,15 @@ class _HomePageState extends State<HomePage> {
                                           )
                                         : Column(
                                             children: [
-                                              SizedBox(height: AppDimensions.ten),
+                                              SizedBox(
+                                                  height: AppDimensions.ten),
                                               const Padding(
-                                                padding:
-                                                    EdgeInsets.only(bottom: 5.0),
+                                                padding: EdgeInsets.only(
+                                                    bottom: 5.0),
                                                 child: Text(
                                                   "Night Light Frequency",
-                                                  style: TextStyle(fontSize: 17),
+                                                  style:
+                                                      TextStyle(fontSize: 17),
                                                 ),
                                               ),
                                               Row(
@@ -1889,10 +1919,11 @@ class _HomePageState extends State<HomePage> {
                                                       controller
                                                           .screenselectdecrement();
                                                       controller.update();
-            
+
                                                       if (controller.val ==
                                                           "true") {
-                                                        controller.playButtonB();
+                                                        controller
+                                                            .playButtonB();
                                                         controller.update();
                                                       }
                                                     },
@@ -1904,10 +1935,11 @@ class _HomePageState extends State<HomePage> {
                                                         color: Colors.white,
                                                       ),
                                                     ),
-                                                    style:
-                                                        ElevatedButton.styleFrom(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
                                                       shape: CircleBorder(),
-                                                      padding: EdgeInsets.all(8),
+                                                      padding:
+                                                          EdgeInsets.all(8),
                                                       backgroundColor: AppColors
                                                           .colorBlueDark, // <-- Button color
                                                       foregroundColor: Colors
@@ -1919,7 +1951,8 @@ class _HomePageState extends State<HomePage> {
                                                   // ),
                                                   Expanded(
                                                     child: Container(
-                                                      height: AppDimensions.forty,
+                                                      height:
+                                                          AppDimensions.forty,
                                                       decoration: BoxDecoration(
                                                         borderRadius:
                                                             BorderRadius.circular(
@@ -1935,13 +1968,12 @@ class _HomePageState extends State<HomePage> {
                                                         children: [
                                                           Text(
                                                             "${controller.screens[controller.sc].screenName.toString()}",
-                                                            style:
-                                                                const TextStyle(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    color: Colors
-                                                                        .white),
+                                                            style: const TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color: Colors
+                                                                    .white),
                                                           ),
                                                         ],
                                                       ),
@@ -1955,10 +1987,11 @@ class _HomePageState extends State<HomePage> {
                                                       controller
                                                           .screenselectincrement();
                                                       controller.update();
-            
+
                                                       if (controller.val ==
                                                           "true") {
-                                                        controller.playButtonB();
+                                                        controller
+                                                            .playButtonB();
                                                         controller.update();
                                                       }
                                                     },
@@ -1970,10 +2003,11 @@ class _HomePageState extends State<HomePage> {
                                                         color: Colors.white,
                                                       ),
                                                     ),
-                                                    style:
-                                                        ElevatedButton.styleFrom(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
                                                       shape: CircleBorder(),
-                                                      padding: EdgeInsets.all(8),
+                                                      padding:
+                                                          EdgeInsets.all(8),
                                                       backgroundColor: AppColors
                                                           .colorBlueDark, // <-- Button color
                                                       foregroundColor: Colors
@@ -1983,10 +2017,12 @@ class _HomePageState extends State<HomePage> {
                                                 ],
                                               ),
                                               SizedBox(
-                                                height: AppDimensions.twentyFive,
+                                                height:
+                                                    AppDimensions.twentyFive,
                                                 child: const Text(
                                                   "Duration",
-                                                  style: TextStyle(fontSize: 18),
+                                                  style:
+                                                      TextStyle(fontSize: 18),
                                                 ),
                                               ),
                                               Row(
@@ -1995,10 +2031,11 @@ class _HomePageState extends State<HomePage> {
                                                     onPressed: () {
                                                       controller.decrement();
                                                       controller.update();
-            
+
                                                       if (controller.val ==
                                                           "true") {
-                                                        controller.playButtonB();
+                                                        controller
+                                                            .playButtonB();
                                                         controller.update();
                                                       }
                                                     },
@@ -2010,10 +2047,11 @@ class _HomePageState extends State<HomePage> {
                                                         color: Colors.white,
                                                       ),
                                                     ),
-                                                    style:
-                                                        ElevatedButton.styleFrom(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
                                                       shape: CircleBorder(),
-                                                      padding: EdgeInsets.all(8),
+                                                      padding:
+                                                          EdgeInsets.all(8),
                                                       backgroundColor: AppColors
                                                           .colorBlueDark, // <-- Button color
                                                       foregroundColor: Colors
@@ -2025,7 +2063,8 @@ class _HomePageState extends State<HomePage> {
                                                   // ),
                                                   Expanded(
                                                     child: Container(
-                                                      height: AppDimensions.forty,
+                                                      height:
+                                                          AppDimensions.forty,
                                                       decoration: BoxDecoration(
                                                         borderRadius:
                                                             BorderRadius.circular(
@@ -2041,13 +2080,12 @@ class _HomePageState extends State<HomePage> {
                                                         children: [
                                                           Text(
                                                             "${controller.mint} Mins",
-                                                            style:
-                                                                const TextStyle(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    color: Colors
-                                                                        .white),
+                                                            style: const TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color: Colors
+                                                                    .white),
                                                           ),
                                                         ],
                                                       ),
@@ -2061,7 +2099,8 @@ class _HomePageState extends State<HomePage> {
                                                       controller.increment();
                                                       if (controller.val ==
                                                           "true") {
-                                                        controller.playButtonB();
+                                                        controller
+                                                            .playButtonB();
                                                         controller.update();
                                                       }
                                                     },
@@ -2073,10 +2112,11 @@ class _HomePageState extends State<HomePage> {
                                                         color: Colors.white,
                                                       ),
                                                     ),
-                                                    style:
-                                                        ElevatedButton.styleFrom(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
                                                       shape: CircleBorder(),
-                                                      padding: EdgeInsets.all(8),
+                                                      padding:
+                                                          EdgeInsets.all(8),
                                                       backgroundColor: AppColors
                                                           .colorBlueDark, // <-- Button color
                                                       foregroundColor: Colors
@@ -2090,7 +2130,8 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                               Row(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.spaceEvenly,
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
                                                 children: [
                                                   Expanded(
                                                     child: GestureDetector(
@@ -2134,24 +2175,20 @@ class _HomePageState extends State<HomePage> {
                                                                               () {
                                                                             colorSelectValLava =
                                                                                 false;
-                                                                            controller
-                                                                                .changeColorState(index);
-                                                                            controller.singleColorLava = controller
-                                                                                .singleColorModelLava[index]
-                                                                                .colorName!;
+                                                                            controller.changeColorState(index);
+                                                                            controller.singleColorLava =
+                                                                                controller.singleColorModelLava[index].colorName!;
                                                                             for (int i = 0;
                                                                                 i < controller.singleColorModelLava.length;
                                                                                 i++) {
-                                                                              if (controller.singleColorLava ==
-                                                                                  controller.singleColorModelLava[i].colorName!) {
+                                                                              if (controller.singleColorLava == controller.singleColorModelLava[i].colorName!) {
                                                                                 controller.singleColorModelLava[i].isSelect.value = true;
                                                                               } else {
                                                                                 controller.singleColorModelLava[i].isSelect.value = false;
                                                                               }
                                                                             }
-            
-                                                                            controller.saveColorAndAudioSP(
-                                                                                'lavaColor',
+
+                                                                            controller.saveColorAndAudioSP('lavaColor',
                                                                                 index);
                                                                           },
                                                                           child:
@@ -2160,12 +2197,9 @@ class _HomePageState extends State<HomePage> {
                                                                                 AppDimensions.margin0_5_5_5,
                                                                             child:
                                                                                 Container(
-                                                                              height:
-                                                                                  AppDimensions.thirtyFive,
-                                                                              width:
-                                                                                  AppDimensions.thirtyFive,
-                                                                              decoration:
-                                                                                  BoxDecoration(shape: BoxShape.circle, color: controller.singleColorModelLava[index].colorName),
+                                                                              height: AppDimensions.thirtyFive,
+                                                                              width: AppDimensions.thirtyFive,
+                                                                              decoration: BoxDecoration(shape: BoxShape.circle, color: controller.singleColorModelLava[index].colorName),
                                                                               child: controller.singleColorModelLava[index].isSelect.value
                                                                                   ? const Icon(
                                                                                       Icons.check,
@@ -2192,45 +2226,42 @@ class _HomePageState extends State<HomePage> {
                                                                           .start,
                                                                   children: [
                                                                     InkWell(
-                                                                      onTap: () {
+                                                                      onTap:
+                                                                          () {
                                                                         controller
-                                                                            .changeColorStateForLava(
-                                                                                controller.selectRandomValue());
+                                                                            .changeColorStateForLava(controller.selectRandomValue());
                                                                       },
                                                                       child:
                                                                           Container(
                                                                         margin: EdgeInsets.only(
-                                                                            left: AppDimensions
-                                                                                .twenty,
-                                                                            top: AppDimensions
-                                                                                .ten),
-                                                                        padding: EdgeInsets.all(
-                                                                            AppDimensions
-                                                                                .five),
+                                                                            left:
+                                                                                AppDimensions.twenty,
+                                                                            top: AppDimensions.ten),
+                                                                        padding:
+                                                                            EdgeInsets.all(AppDimensions.five),
                                                                         decoration:
                                                                             BoxDecoration(
                                                                           borderRadius:
                                                                               BorderRadius.circular(20),
-                                                                          border: Border.all(
-                                                                              color:
-                                                                                  Colors.black),
+                                                                          border:
+                                                                              Border.all(color: Colors.black),
                                                                         ),
                                                                         child:
                                                                             Text(
                                                                           AppStrings
                                                                               .random,
-                                                                          style: const TextStyle(
-                                                                              color:
-                                                                                  Colors.black),
+                                                                          style:
+                                                                              const TextStyle(color: Colors.black),
                                                                         ),
                                                                       ),
                                                                     ),
                                                                   ],
                                                                 ),
                                                                 ElevatedButton(
-                                                                  onPressed: () {
+                                                                  onPressed:
+                                                                      () {
                                                                     Get.back();
-            
+
                                                                     if (controller
                                                                             .val ==
                                                                         "true") {
@@ -2248,7 +2279,8 @@ class _HomePageState extends State<HomePage> {
                                                                           borderRadius:
                                                                               BorderRadius.circular(AppDimensions.twenty))),
                                                                   child: Text(
-                                                                    AppStrings.ok,
+                                                                    AppStrings
+                                                                        .ok,
                                                                     style: const TextStyle(
                                                                         color: Colors
                                                                             .white),
@@ -2281,8 +2313,9 @@ class _HomePageState extends State<HomePage> {
                                                               height:
                                                                   AppDimensions
                                                                       .thirty,
-                                                              width: AppDimensions
-                                                                  .thirty,
+                                                              width:
+                                                                  AppDimensions
+                                                                      .thirty,
                                                             ),
                                                           ),
                                                           Row(
@@ -2335,8 +2368,7 @@ class _HomePageState extends State<HomePage> {
                                                                             0.4),
                                                                   ),
                                                                   SizedBox(
-                                                                    height: MediaQuery.of(
-                                                                                context)
+                                                                    height: MediaQuery.of(context)
                                                                             .size
                                                                             .height /
                                                                         4,
@@ -2367,7 +2399,7 @@ class _HomePageState extends State<HomePage> {
                                                                                   () => Container(
                                                                                     height: AppDimensions.fifty,
                                                                                     width: double.infinity,
-            
+
                                                                                     // ignore: unrelated_type_equality_checks
                                                                                     color: controller.thirdmultiAudioModel[index].isSelect.value == true ? AppColors.colorBlueDark : Colors.transparent,
                                                                                     // ignore: unrelated_type_equality_checks
@@ -2387,7 +2419,7 @@ class _HomePageState extends State<HomePage> {
                                                                     onPressed:
                                                                         () {
                                                                       Get.back();
-            
+
                                                                       if (controller
                                                                               .val ==
                                                                           "true") {
@@ -2408,8 +2440,8 @@ class _HomePageState extends State<HomePage> {
                                                                       AppStrings
                                                                           .ok,
                                                                       style: const TextStyle(
-                                                                          color: Colors
-                                                                              .white),
+                                                                          color:
+                                                                              Colors.white),
                                                                     ),
                                                                   )
                                                                 ],
@@ -2424,7 +2456,8 @@ class _HomePageState extends State<HomePage> {
                                                                       top: 3,
                                                                       left: 13,
                                                                       right: 13,
-                                                                      bottom: 3),
+                                                                      bottom:
+                                                                          3),
                                                               decoration: BoxDecoration(
                                                                   border: Border.all(
                                                                       color: audioSelectValLava
@@ -2432,8 +2465,10 @@ class _HomePageState extends State<HomePage> {
                                                                               .red
                                                                           : Colors
                                                                               .transparent,
-                                                                      width: 5)),
-                                                              child: Image.asset(
+                                                                      width:
+                                                                          5)),
+                                                              child:
+                                                                  Image.asset(
                                                                 AssetsBase
                                                                     .music_select,
                                                                 height:
@@ -2487,242 +2522,267 @@ class _HomePageState extends State<HomePage> {
                           SizedBox(
                             height: MediaQuery.of(context).size.height * 0.1,
                           ),
-            
+
                           Container(
-                             alignment: Alignment.bottomCenter,
-                            child: Column(
-                              children: [
-            
-                              ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                primary: Color.fromARGB(255, 186, 186, 193),
-                              ),
-                              child: Text(
-                                AppStrings.skipAd + ">>",
-                                style: TextStyle(color: Colors.black, fontSize: 20),
-                              ),
-                            ),
-            
-                             const SizedBox(
-                                height: 8,
-                              ),
-                             
-                              SizedBox(
-                                height: AppDimensions.forty,
-                                width: AppDimensions.hundredeighty,
-                                child: ElevatedButton(
-                                    onPressed: () {
-                                      if (controller.val == "true") {
-                                        controller.playButtonB();
-                                        controller.update();
-                                      }
-                                      if (controller.selectColor == 0) {
-                                        if (!controller.checkColorModelSingle()) {
-                                          Fluttertoast.showToast(
-                                              msg: "Please Select Color !",
-                                              toastLength: Toast.LENGTH_SHORT,
-                                              gravity: ToastGravity.CENTER,
-                                              timeInSecForIosWeb: 1,
-                                              backgroundColor: Colors.grey,
-                                              textColor: Colors.white,
-                                              fontSize: 16.0);
-                                          setState(() {
-                                            colorSelectValSingle = true;
-                                          });
-                                        } else if (!controller
-                                            .checkAudioModelSingle()) {
-                                          Fluttertoast.showToast(
-                                              msg: "Please Select Audio !",
-                                              toastLength: Toast.LENGTH_SHORT,
-                                              gravity: ToastGravity.CENTER,
-                                              timeInSecForIosWeb: 1,
-                                              backgroundColor: Colors.grey,
-                                              textColor: Colors.white,
-                                              fontSize: 16.0);
-                                          setState(() {
-                                            colorSelectValSingle = false;
-                                            audioSelectValSingle = true;
-                                          });
-                                        } else {
-                                          // print(
-                                          //     'isInterstitialAdReady $isInterstitialAdReady');
-                                          try {
-                                            if (controller
-                                                .isInterstitialAdReady) {
-                                              controller.interstitialAd
-                                                  ?.show()
-                                                  .then((value) {
-                                                controller.interstitialaddsfunc();
-                                              });
-                                            }
-                                          } catch (e) {
-                                            print('e ${e.toString()}');
+                              alignment: Alignment.bottomCenter,
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    height: AppDimensions.forty,
+                                    width: AppDimensions.hundredeighty,
+                                    child: ElevatedButton(
+                                        onPressed: () {
+                                          if (controller.val == "true") {
+                                            controller.playButtonB();
+                                            controller.update();
                                           }
-                                          AppRouteMaps.gotoColorPick(
-                                              controller.getSelectedColor()!,
-                                              controller.getSelectedAudio()!,
-                                              controller.mint);
-                                          setState(() {
-                                            colorSelectValSingle = false;
-                                            audioSelectValSingle = false;
-                                            controller.isInterstitialAdReady =
-                                                true;
-                                            // print("Add Loaded");
-                                          });
-                                        }
-                                      } else if (controller.selectColor == 1) {
-                                        if (!controller.checkColorModelMulti()) {
-                                          Fluttertoast.showToast(
-                                              msg: "Please Select Color !",
-                                              toastLength: Toast.LENGTH_SHORT,
-                                              gravity: ToastGravity.CENTER,
-                                              timeInSecForIosWeb: 1,
-                                              backgroundColor: Colors.grey,
-                                              textColor: Colors.white,
-                                              fontSize: 16.0);
-                                          setState(() {
-                                            colorSelectValMulti = true;
-                                          });
-                                        } else if (!controller
-                                            .checkAudioModelMulti()) {
-                                          Fluttertoast.showToast(
-                                              msg: "Please Select Audio !",
-                                              toastLength: Toast.LENGTH_SHORT,
-                                              gravity: ToastGravity.CENTER,
-                                              timeInSecForIosWeb: 1,
-                                              backgroundColor: Colors.grey,
-                                              textColor: Colors.white,
-                                              fontSize: 16.0);
-                                          setState(() {
-                                            colorSelectValMulti = false;
-                                            audioSelectValMulti = true;
-                                          });
-                                        } else {
-                                          try {
-                                            print(
-                                                'isInterstitialAdReady $controller.isInterstitialAdReady');
-                                            if (controller
-                                                .isInterstitialAdReady) {
-                                              controller.interstitialAd
-                                                  ?.show()
-                                                  .then((value) {
-                                                controller.interstitialaddsfunc();
-                                              }).onError((error, stackTrace) {
+                                          if (controller.selectColor == 0) {
+                                            if (!controller
+                                                .checkColorModelSingle()) {
+                                              Fluttertoast.showToast(
+                                                  msg: "Please Select Color !",
+                                                  toastLength:
+                                                      Toast.LENGTH_SHORT,
+                                                  gravity: ToastGravity.CENTER,
+                                                  timeInSecForIosWeb: 1,
+                                                  backgroundColor: Colors.grey,
+                                                  textColor: Colors.white,
+                                                  fontSize: 16.0);
+                                              setState(() {
+                                                colorSelectValSingle = true;
+                                              });
+                                            } else if (!controller
+                                                .checkAudioModelSingle()) {
+                                              Fluttertoast.showToast(
+                                                  msg: "Please Select Audio !",
+                                                  toastLength:
+                                                      Toast.LENGTH_SHORT,
+                                                  gravity: ToastGravity.CENTER,
+                                                  timeInSecForIosWeb: 1,
+                                                  backgroundColor: Colors.grey,
+                                                  textColor: Colors.white,
+                                                  fontSize: 16.0);
+                                              setState(() {
+                                                colorSelectValSingle = false;
+                                                audioSelectValSingle = true;
+                                              });
+                                            } else {
+                                              // print(
+                                              //     'isInterstitialAdReady $isInterstitialAdReady');
+                                              try {
+                                                if (controller
+                                                    .isInterstitialAdReady) {
+                                                  controller.interstitialAd
+                                                      ?.show()
+                                                      .then((value) {
+                                                    controller
+                                                        .interstitialaddsfunc();
+                                                  });
+                                                }
+                                              } catch (e) {
+                                                print('e ${e.toString()}');
+                                              }
+                                              AppRouteMaps.gotoColorPick(
+                                                  controller
+                                                      .getSelectedColor()!,
+                                                  controller
+                                                      .getSelectedAudio()!,
+                                                  controller.mint);
+                                              setState(() {
+                                                colorSelectValSingle = false;
+                                                audioSelectValSingle = false;
+                                                controller
+                                                        .isInterstitialAdReady =
+                                                    true;
+                                                // print("Add Loaded");
+                                              });
+                                            }
+                                          } else if (controller.selectColor ==
+                                              1) {
+                                            if (!controller
+                                                .checkColorModelMulti()) {
+                                              Fluttertoast.showToast(
+                                                  msg: "Please Select Color !",
+                                                  toastLength:
+                                                      Toast.LENGTH_SHORT,
+                                                  gravity: ToastGravity.CENTER,
+                                                  timeInSecForIosWeb: 1,
+                                                  backgroundColor: Colors.grey,
+                                                  textColor: Colors.white,
+                                                  fontSize: 16.0);
+                                              setState(() {
+                                                colorSelectValMulti = true;
+                                              });
+                                            } else if (!controller
+                                                .checkAudioModelMulti()) {
+                                              Fluttertoast.showToast(
+                                                  msg: "Please Select Audio !",
+                                                  toastLength:
+                                                      Toast.LENGTH_SHORT,
+                                                  gravity: ToastGravity.CENTER,
+                                                  timeInSecForIosWeb: 1,
+                                                  backgroundColor: Colors.grey,
+                                                  textColor: Colors.white,
+                                                  fontSize: 16.0);
+                                              setState(() {
+                                                colorSelectValMulti = false;
+                                                audioSelectValMulti = true;
+                                              });
+                                            } else {
+                                              try {
                                                 print(
-                                                    'error ${error.toString()}');
+                                                    'isInterstitialAdReady $controller.isInterstitialAdReady');
+                                                if (controller
+                                                    .isInterstitialAdReady) {
+                                                  controller.interstitialAd
+                                                      ?.show()
+                                                      .then((value) {
+                                                    controller
+                                                        .interstitialaddsfunc();
+                                                  }).onError(
+                                                          (error, stackTrace) {
+                                                    print(
+                                                        'error ${error.toString()}');
+                                                  });
+                                                }
+                                              } catch (e) {}
+                                              controller
+                                                  .multipleColorSelection();
+                                              AppRouteMaps.gotoColorPick1(
+                                                  controller.isRainbowSelect ==
+                                                          true
+                                                      ? controller
+                                                          .multiModel.reversed
+                                                          .toList()
+                                                      : controller.multiModel,
+                                                  controller
+                                                      .getSelectedAudioMulti()!,
+                                                  controller.mint,
+                                                  controller.sec);
+
+                                              setState(() {
+                                                controller
+                                                        .isInterstitialAdReady =
+                                                    true;
+                                                colorSelectValMulti = false;
+                                                audioSelectValMulti = false;
                                               });
                                             }
-                                          } catch (e) {}
-                                          controller.multipleColorSelection();
-                                          AppRouteMaps.gotoColorPick1(
-                                              controller.isRainbowSelect == true
-                                                  ? controller.multiModel.reversed
-                                                      .toList()
-                                                  : controller.multiModel,
-                                              controller.getSelectedAudioMulti()!,
-                                              controller.mint,
-                                              controller.sec);
-            
-                                          setState(() {
-                                            controller.isInterstitialAdReady =
-                                                true;
-                                            colorSelectValMulti = false;
-                                            audioSelectValMulti = false;
-                                          });
-                                        }
-                                      } else {
-                                        if (!controller.checkColorModelLava()) {
-                                          Fluttertoast.showToast(
-                                              msg: "Please Select Color !",
-                                              toastLength: Toast.LENGTH_SHORT,
-                                              gravity: ToastGravity.CENTER,
-                                              timeInSecForIosWeb: 1,
-                                              backgroundColor: Colors.grey,
-                                              textColor: Colors.white,
-                                              fontSize: 16.0);
-                                          setState(() {
-                                            colorSelectValLava = true;
-                                          });
-                                        } else if (!controller
-                                            .checkAudioModelLava()) {
-                                          Fluttertoast.showToast(
-                                              msg: "Please Select Audio !",
-                                              toastLength: Toast.LENGTH_SHORT,
-                                              gravity: ToastGravity.CENTER,
-                                              timeInSecForIosWeb: 1,
-                                              backgroundColor: Colors.grey,
-                                              textColor: Colors.white,
-                                              fontSize: 16.0);
-                                          setState(() {
-                                            colorSelectValLava = false;
-                                            audioSelectValLava = true;
-                                          });
-                                        } else {
-                                          try {
-                                            print(
-                                                'isInterstitialAdReady $controller.isInterstitialAdReady');
-                                            if (controller
-                                                .isInterstitialAdReady) {
-                                              controller.interstitialAd
-                                                  ?.show()
-                                                  .then((value) {
-                                                controller.interstitialaddsfunc();
+                                          } else {
+                                            if (!controller
+                                                .checkColorModelLava()) {
+                                              Fluttertoast.showToast(
+                                                  msg: "Please Select Color !",
+                                                  toastLength:
+                                                      Toast.LENGTH_SHORT,
+                                                  gravity: ToastGravity.CENTER,
+                                                  timeInSecForIosWeb: 1,
+                                                  backgroundColor: Colors.grey,
+                                                  textColor: Colors.white,
+                                                  fontSize: 16.0);
+                                              setState(() {
+                                                colorSelectValLava = true;
+                                              });
+                                            } else if (!controller
+                                                .checkAudioModelLava()) {
+                                              Fluttertoast.showToast(
+                                                  msg: "Please Select Audio !",
+                                                  toastLength:
+                                                      Toast.LENGTH_SHORT,
+                                                  gravity: ToastGravity.CENTER,
+                                                  timeInSecForIosWeb: 1,
+                                                  backgroundColor: Colors.grey,
+                                                  textColor: Colors.white,
+                                                  fontSize: 16.0);
+                                              setState(() {
+                                                colorSelectValLava = false;
+                                                audioSelectValLava = true;
+                                              });
+                                            } else {
+                                              try {
+                                                print(
+                                                    'isInterstitialAdReady $controller.isInterstitialAdReady');
+                                                if (controller
+                                                    .isInterstitialAdReady) {
+                                                  controller.interstitialAd
+                                                      ?.show()
+                                                      .then((value) {
+                                                    controller
+                                                        .interstitialaddsfunc();
+                                                  });
+                                                }
+                                              } catch (e) {}
+                                              controller.selectedScreen =
+                                                  controller
+                                                      .screens[controller.sc]
+                                                      .screenName
+                                                      .toString();
+                                              controller.selectedScreenType =
+                                                  controller
+                                                      .screens[controller.sc]
+                                                      .screenType
+                                                      .toString();
+
+                                              controller.selectedScreenValue =
+                                                  controller
+                                                      .screens[controller.sc]
+                                                      .screenValue
+                                                      .toString();
+                                              AppRouteMaps.goToLavaPage(
+                                                  controller
+                                                      .getSelectedColorLava()!,
+                                                  controller.selectedScreen,
+                                                  controller.selectedScreenType,
+                                                  controller
+                                                      .selectedScreenValue,
+                                                  controller
+                                                      .getSelectedAudioLava()!,
+                                                  controller.mint);
+                                              setState(() {
+                                                controller
+                                                        .isInterstitialAdReady =
+                                                    true;
+                                                colorSelectValLava = false;
+                                                audioSelectValLava = false;
                                               });
                                             }
-                                          } catch (e) {}
-                                          controller.selectedScreen = controller
-                                              .screens[controller.sc].screenName
-                                              .toString();
-                                          controller.selectedScreenType =
-                                              controller.screens[controller.sc]
-                                                  .screenType
-                                                  .toString();
-            
-                                          controller.selectedScreenValue =
-                                              controller.screens[controller.sc]
-                                                  .screenValue
-                                                  .toString();
-                                          AppRouteMaps.goToLavaPage(
-                                              controller.getSelectedColorLava()!,
-                                              controller.selectedScreen,
-                                              controller.selectedScreenType,
-                                              controller.selectedScreenValue,
-                                              controller.getSelectedAudioLava()!,
-                                              controller.mint);
-                                          setState(() {
-                                            controller.isInterstitialAdReady =
-                                                true;
-                                            colorSelectValLava = false;
-                                            audioSelectValLava = false;
-                                          });
-                                        }
-                                      }
-                                    },
+                                          }
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                            primary:
+                                                Color.fromARGB(255, 15, 183, 6),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20)),
+                                            padding: const EdgeInsets.all(10)),
+                                        child: Text(
+                                          AppStrings.start,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: AppDimensions.eighteen,
+                                          ),
+                                        )),
+                                  ),
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {},
                                     style: ElevatedButton.styleFrom(
-                                        primary: Color.fromARGB(255, 15, 183, 6),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20)),
-                                        padding: const EdgeInsets.all(10)),
+                                      primary:
+                                          Color.fromARGB(255, 186, 186, 193),
+                                    ),
                                     child: Text(
-                                      AppStrings.start,
+                                      AppStrings.skipAd + ">>",
                                       style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: AppDimensions.eighteen,
-                                      ),
-                                    )),
-                              )
-            
-            
-                              ],
-            
-                            )
-                          ),
-                         
+                                          color: Colors.black, fontSize: 20),
+                                    ),
+                                  ),
+                                ],
+                              )),
                         ],
                       );
-                        }),
+                    }),
                   ),
                   Positioned.fill(
                     child: controller.showBubbles.value

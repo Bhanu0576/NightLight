@@ -31,7 +31,7 @@ abstract class AppStrings {
   static String start = 'Start';
   static String background_sound = 'Background Sound';
   static String rainbow = 'Rainbow';
-  static String nightLamp = 'Best Night Lamp';
+  static String nightLamp = 'Night Lamp';
   static String colorSelection = 'For Color Selection';
   static String audioSelection = 'For Audio Selection';
   static String skipAd = 'Remove Ads';
