@@ -93,5 +93,12 @@ abstract class AppRouteMaps {
     );
   }
 
+  static void goToRemoveAdsPage()
+  {
+    Get.toNamed(
+      Routes.removeAdsPage,
+    );
+  }
+
 
 }

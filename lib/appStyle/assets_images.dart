@@ -22,5 +22,16 @@ abstract class AssetsBase {
   static const String gradientlight = 'assets/images/gradientlight.png';
   static const String splashlight = 'assets/images/splashlight.png';
   static const String removead = 'assets/images/removead.png';
+  static const String restore_purchase = 'assets/images/restorepurchase.png';
+  
+  static const String secure_reliable = 'assets/images/secure_reliable.png';
+  static const String fastest_Service = 'assets/images/fastest_Service.png';
+  static const String no_add_interuption = 'assets/images/no_add_interuption.png';
+
+  static const String best_price_tag = 'assets/images/best_price_tag.png';
+  static const String vertical_line = 'assets/images/vertical_line.png';
+
+
+
 
 }

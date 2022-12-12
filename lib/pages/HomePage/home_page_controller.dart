@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:demo1212/model/multi_model_colors.dart';
+import 'package:demo1212/utils/dotted_line.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -769,6 +770,126 @@ class HomePageController extends GetxController {
     }
     thirdmultiAudioModel[index].isSelect.value = true;
     update();
+  }
+
+  removeAds_dialog()
+  {
+       Get.defaultDialog(
+                                                        title: '',
+                                                        content: Column(
+                                                          children: [
+                                                            const Text("Remove/Restore App",
+                                                            style: TextStyle(fontWeight: FontWeight.bold),
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 10,
+                                                            ),
+                                                            const DotteLine(
+                                                              linecolor: Color
+                                                                  .fromRGBO(
+                                                                      61,
+                                                                      61,
+                                                                      61,
+                                                                      0.4),
+                                                            ),
+                                                            const SizedBox(
+                                                              height: 10,
+                                                            ),
+                                                            Column(
+                                                              children: [
+                                                                Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                  children: [
+                                                                    Text("Remove Ads"),
+                                                                    Text("1.99", style: TextStyle(fontWeight: FontWeight.bold),)
+                                                                  ],
+                                                                ),
+                                                                ElevatedButton(
+                                                              onPressed: () {
+                                                                Get.back();
+                                                              },
+                                                              style: ElevatedButton.styleFrom(
+                                                                  primary: Colors.blue,
+                                                                  shape: RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              20))),
+                                                              child: Text(
+                                                                "Remove Ads",
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .white),
+                                                              ),
+                                                            )
+                                                              ],
+                                                            ),
+                                                            
+                                                            const SizedBox(
+                                                              height: 10,
+                                                            ),
+                                                            const DotteLine(
+                                                              linecolor: Color
+                                                                  .fromRGBO(
+                                                                      61,
+                                                                      61,
+                                                                      61,
+                                                                      0.4),
+                                                            ),
+
+                                                            const SizedBox(
+                                                              height: 10,
+                                                            ),
+
+                                                            Column(
+                                                              children: [
+                                                                Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                  children: [
+                                                                    Text("Remove Ads"),
+                                                                    Text("1.99", style: TextStyle(fontWeight: FontWeight.bold),)
+                                                                  ],
+                                                                ),
+                                                                ElevatedButton(
+                                                              onPressed: () {
+                                                                Get.back();
+                                                              },
+                                                              style: ElevatedButton.styleFrom(
+                                                                  primary: Colors.blue,
+                                                                  shape: RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              20))),
+                                                              child: Text( "Restore Purchase",
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .white),
+                                                              ),
+                                                            )
+                                                              ],
+                                                            ),
+                                                            
+                                                            const SizedBox(
+                                                              height: 10,
+                                                            ),
+
+                                                            const DotteLine(
+                                                              linecolor: Color
+                                                                  .fromRGBO(
+                                                                      61,
+                                                                      61,
+                                                                      61,
+                                                                      0.4),
+                                                            ),
+
+                                                            const SizedBox(
+                                                              height: 10,
+                                                            ),
+                                                            
+                                                          ],
+                                                        ));
+                                                 
+
+                                                  
   }
 
   @override

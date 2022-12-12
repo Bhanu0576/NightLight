@@ -15,6 +15,8 @@ import 'package:demo1212/pages/splash/splash_page_view.dart';
 // import '../pages/HomePage/lavaScreen/lava_screen_view.dart';
 import '../pages/lavaScreen/lava_screen_binding.dart';
 import '../pages/lavaScreen/lava_screen_view.dart';
+import '../pages/no_ads/remove_ads_bindings.dart';
+import '../pages/no_ads/remove_ads_view.dart';
 import '../settings/setting_screen_binding.dart';
 import '../settings/setting_screen_view.dart';
 
@@ -93,7 +95,14 @@ class AppPages {
       page: ContactUsView.new,
       binding: ContactUsPageBinding(),
       transition: Transition.fadeIn,
-      )
+      ),
+      GetPage<dynamic>(
+      name: _Paths.removeAdsPage,
+      transitionDuration: transitionDuration,
+      page: RemmoveAdsView.new,
+      binding: RemoveAdsBinding(),
+      transition: Transition.fadeIn,
+    ),
 
 
   ];

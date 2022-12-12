@@ -13,6 +13,8 @@ abstract class Routes {
   static const showCaseMain = _Paths.showCaseMain;
   static const htmlScreenMain = _Paths.htmlScreenMain;
   static const contactUsPage = _Paths.contactUsPage;
+  static const removeAdsPage = _Paths.removeAdsPage;
+
 
   //static const customShowCaseWidget = _Paths.customShowCaseWidget;
 }
@@ -27,6 +29,7 @@ abstract class _Paths {
   static const showCaseMain = '/showCaseMain';
   static const htmlScreenMain = '/htmlScreenView';
   static const contactUsPage = '/contactUsPage';
+  static const removeAdsPage = '/removeAdsPage';
 
   //static const customShowCaseWidget = '/customShowCaseWidget';
 }

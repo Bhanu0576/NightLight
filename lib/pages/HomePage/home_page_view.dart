@@ -69,6 +69,8 @@ class _HomePageState extends State<HomePage> {
   bool colorSelectValLava = false;
   bool audioSelectValLava = false;
 
+  bool inAppVal = false;
+
   var dsh = Get.isRegistered<HomePageController>()
       ? Get.find<HomePageController>()
       : Get.put(HomePageController());
@@ -84,6 +86,7 @@ class _HomePageState extends State<HomePage> {
   List<String> _notFoundIds = <String>[];
   List<ProductDetails> _products = <ProductDetails>[];
   List<PurchaseDetails> _purchases = <PurchaseDetails>[];
+  List<PurchaseDetails> purchaseDetailsList = <PurchaseDetails>[];
 
   @override
   void initState() {
@@ -132,7 +135,15 @@ class _HomePageState extends State<HomePage> {
       _subscription.cancel();
     }, onError: (Object error) {});
     initStoreInfo();
+
+    getLastPurchase();
     super.initState();
+  }
+
+  Future<void> getLastPurchase() async {
+    final prefs = await SharedPreferences.getInstance();
+    inAppVal = prefs.getBool('inAppPurchased') ?? false;
+    setState(() {});
   }
 
   Future<void> initStoreInfo() async {
@@ -203,8 +214,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future<void> _listenToPurchaseUpdated(
-      List<PurchaseDetails> purchaseDetailsList) async {
+  Future<void> _listenToPurchaseUpdated(purchaseDetailsList) async {
     print("purchaseDetailsList $purchaseDetailsList");
     for (final PurchaseDetails purchaseDetails in purchaseDetailsList) {
       print("purchaseDetails $purchaseDetails");
@@ -221,10 +231,12 @@ class _HomePageState extends State<HomePage> {
         //   final prefs = await SharedPreferences.getInstance();
         //   prefs.setBool("inPurchased", true);
         // }
-        if(purchaseDetails.status == PurchaseStatus.purchased)
-        {
+        if (purchaseDetails.status == PurchaseStatus.purchased) {
           final prefs = await SharedPreferences.getInstance();
           prefs.setBool("inAppPurchased", true);
+          inAppVal = prefs.getBool('inAppPurchased')!;
+          setState(() {});
+          print("Purchase detale status ${purchaseDetails.status} ");
         }
 
         //----------------------------------
@@ -262,6 +274,27 @@ class _HomePageState extends State<HomePage> {
           // bottom: false,
           child: Scaffold(
             backgroundColor: AppColors.colorBlueDark,
+            appBar: AppBar(
+              elevation: 0,
+              //title:Image(image: AssetImage(AssetsBase.splashlight)),
+              title: const Text("Night Lamp"),
+              centerTitle: true,
+              backgroundColor: AppColors.colorBlueDark,
+              actions: [
+                //Image(image: AssetImage(AssetsBase.splashlight,), height: 10,),
+                Container(
+                  padding: EdgeInsets.all(7),
+                  height: AppDimensions.fiftyFive,
+                  width: AppDimensions.fiftyFive,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
+                      color: AppColors.colorBlueDark),
+                  child: const Image(
+                    image: AssetImage(AssetsBase.splashlight),
+                  ),
+                ),
+              ],
+            ),
             drawer: Drawer(
               child: Column(
                 children: [
@@ -372,6 +405,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     // onTap: () {},
                   ),
+                  // !inAppVal ?
                   ListTile(
                     leading: SizedBox(
                         height: AppDimensions.twenty,
@@ -382,28 +416,41 @@ class _HomePageState extends State<HomePage> {
                       textScaleFactor: AppDimensions.onepointtwo,
                     ),
                     onTap: () async {
-                      late PurchaseParam purchaseParam;
+                      // late PurchaseParam purchaseParam;
 
-                      if (Platform.isAndroid) {
-                        purchaseParam = GooglePlayPurchaseParam(
-                          productDetails: _products[0],
-                        );
-                      } else {
-                        purchaseParam = PurchaseParam(
-                          productDetails: _products[0],
-                        );
-                      }
+                      // if (Platform.isAndroid) {
+                      //   purchaseParam = GooglePlayPurchaseParam(
+                      //     productDetails: _products[0],
+                      //   );
+                      // } else {
+                      //   purchaseParam = PurchaseParam(
+                      //     productDetails: _products[0],
+                      //   );
+                      // }
 
-                      if (_products[0].id == _kConsumableId) {
-                        _inAppPurchase.buyConsumable(
-                            purchaseParam: purchaseParam,
-                            autoConsume: _kAutoConsume);
-                      } else {
-                        _inAppPurchase.buyNonConsumable(
-                            purchaseParam: purchaseParam);
-                      }
+                      // if (_products[0].id == _kConsumableId) {
+                      //   _inAppPurchase.buyConsumable(
+                      //       purchaseParam: purchaseParam,
+                      //       autoConsume: _kAutoConsume);
+                      // } else {
+                      //   _inAppPurchase.buyNonConsumable(
+                      //       purchaseParam: purchaseParam);
+                      // }
+                      // controller.removeAds_dialog();
+                       AppRouteMaps.goToRemoveAdsPage();
                     },
                   ),
+                  // : ListTile(
+                  //     leading: SizedBox(
+                  //         height: AppDimensions.twenty,
+                  //         width: AppDimensions.twenty,
+                  //         child: Image.asset(AssetsBase.restore_purchase)),
+                  //     title: Text(
+                  //       "Restore Purchase",
+                  //       textScaleFactor: AppDimensions.onepointtwo,
+                  //     ),
+                  //     onTap: () async {},
+                  //   ),
                   const Spacer(),
                   RichText(
                     text: TextSpan(
@@ -435,36 +482,19 @@ class _HomePageState extends State<HomePage> {
                       contextCustom = context;
                       return Column(
                         children: [
-                          AppBar(
-                            //title:Image(image: AssetImage(AssetsBase.splashlight)),
-                            title: const Text("Night Lamp"),
-                            centerTitle: true,
-                            backgroundColor: AppColors.colorBlueDark,
-                            actions: [
-                              //Image(image: AssetImage(AssetsBase.splashlight,), height: 10,),
-                              Container(
-                                padding: EdgeInsets.all(7),
-                                height: AppDimensions.fiftyFive,
-                                width: AppDimensions.fiftyFive,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(100),
-                                    color: AppColors.colorBlueDark),
-                                child: const Image(
-                                  image: AssetImage(AssetsBase.splashlight),
-                                ),
-                              ),
-                            ],
-                          ),
-                          // controller.bannerAd != null ?
-                          //if(isBannerAdReady)
-                          SizedBox(
-                            width: double.infinity,
-                            height: 100,
-                            child: AdWidget(
-                              ad: bannerAd,
-                            ),
-                          ),
-                          // : Container(),
+                          !inAppVal
+                              ? SizedBox(
+                                  width: double.infinity,
+                                  height: 100,
+                                  child: AdWidget(
+                                    ad: bannerAd,
+                                  ),
+                                )
+                              : controller.selectColor == 0
+                                  ? Container(
+                                      height: 60,
+                                    )
+                                  : Container(),
 
                           SizedBox(
                             height: MediaQuery.of(context).size.height / 60,
@@ -2569,19 +2599,22 @@ class _HomePageState extends State<HomePage> {
                                             } else {
                                               // print(
                                               //     'isInterstitialAdReady $isInterstitialAdReady');
-                                              try {
-                                                if (controller
-                                                    .isInterstitialAdReady) {
-                                                  controller.interstitialAd
-                                                      ?.show()
-                                                      .then((value) {
-                                                    controller
-                                                        .interstitialaddsfunc();
-                                                  });
+                                              if (!inAppVal) {
+                                                try {
+                                                  if (controller
+                                                      .isInterstitialAdReady) {
+                                                    controller.interstitialAd
+                                                        ?.show()
+                                                        .then((value) {
+                                                      controller
+                                                          .interstitialaddsfunc();
+                                                    });
+                                                  }
+                                                } catch (e) {
+                                                  print('e ${e.toString()}');
                                                 }
-                                              } catch (e) {
-                                                print('e ${e.toString()}');
                                               }
+
                                               AppRouteMaps.gotoColorPick(
                                                   controller
                                                       .getSelectedColor()!,
@@ -2629,23 +2662,26 @@ class _HomePageState extends State<HomePage> {
                                                 audioSelectValMulti = true;
                                               });
                                             } else {
-                                              try {
-                                                print(
-                                                    'isInterstitialAdReady $controller.isInterstitialAdReady');
-                                                if (controller
-                                                    .isInterstitialAdReady) {
-                                                  controller.interstitialAd
-                                                      ?.show()
-                                                      .then((value) {
-                                                    controller
-                                                        .interstitialaddsfunc();
-                                                  }).onError(
-                                                          (error, stackTrace) {
-                                                    print(
-                                                        'error ${error.toString()}');
-                                                  });
-                                                }
-                                              } catch (e) {}
+                                              if (!inAppVal) {
+                                                try {
+                                                  print(
+                                                      'isInterstitialAdReady $controller.isInterstitialAdReady');
+                                                  if (controller
+                                                      .isInterstitialAdReady) {
+                                                    controller.interstitialAd
+                                                        ?.show()
+                                                        .then((value) {
+                                                      controller
+                                                          .interstitialaddsfunc();
+                                                    }).onError((error,
+                                                            stackTrace) {
+                                                      print(
+                                                          'error ${error.toString()}');
+                                                    });
+                                                  }
+                                                } catch (e) {}
+                                              }
+
                                               controller
                                                   .multipleColorSelection();
                                               AppRouteMaps.gotoColorPick1(
@@ -2699,19 +2735,22 @@ class _HomePageState extends State<HomePage> {
                                                 audioSelectValLava = true;
                                               });
                                             } else {
-                                              try {
-                                                print(
-                                                    'isInterstitialAdReady $controller.isInterstitialAdReady');
-                                                if (controller
-                                                    .isInterstitialAdReady) {
-                                                  controller.interstitialAd
-                                                      ?.show()
-                                                      .then((value) {
-                                                    controller
-                                                        .interstitialaddsfunc();
-                                                  });
-                                                }
-                                              } catch (e) {}
+                                              if (!inAppVal) {
+                                                try {
+                                                  print(
+                                                      'isInterstitialAdReady $controller.isInterstitialAdReady');
+                                                  if (controller
+                                                      .isInterstitialAdReady) {
+                                                    controller.interstitialAd
+                                                        ?.show()
+                                                        .then((value) {
+                                                      controller
+                                                          .interstitialaddsfunc();
+                                                    });
+                                                  }
+                                                } catch (e) {}
+                                              }
+
                                               controller.selectedScreen =
                                                   controller
                                                       .screens[controller.sc]
@@ -2766,18 +2805,23 @@ class _HomePageState extends State<HomePage> {
                                   const SizedBox(
                                     height: 8,
                                   ),
-                                  ElevatedButton(
-                                    onPressed: () {},
-                                    style: ElevatedButton.styleFrom(
-                                      primary:
-                                          Color.fromARGB(255, 186, 186, 193),
-                                    ),
-                                    child: Text(
-                                      AppStrings.skipAd + ">>",
-                                      style: TextStyle(
-                                          color: Colors.black, fontSize: 20),
-                                    ),
-                                  ),
+                                  !inAppVal
+                                      ? ElevatedButton(
+                                          onPressed: () {
+                                            AppRouteMaps.goToRemoveAdsPage();
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            primary: Color.fromARGB(
+                                                255, 186, 186, 193),
+                                          ),
+                                          child: Text(
+                                            AppStrings.skipAd + ">>",
+                                            style: const TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 20),
+                                          ),
+                                        )
+                                      : Container()
                                 ],
                               )),
                         ],

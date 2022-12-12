@@ -1,4 +1,5 @@
 import 'package:demo1212/navigation/app_pages.dart';
+import 'package:demo1212/pages/no_ads/remove_ads_view.dart';
 // import 'package:firebase_core/firebase_core.dart';
 // import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     MobileAds.instance.initialize();
+
+    // return MaterialApp(
+    //   title: 'Flutter App',
+    //   home: RemmoveAdsView(),
+    // );
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       getPages: AppPages.pages,
